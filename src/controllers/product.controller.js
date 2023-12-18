@@ -101,14 +101,14 @@ exports.getFilterMetrics = async (req, res, next) => {
       },
     ]).toArray();
 
-    // Stocker les résultats dans la collection "Metrics" de MongoDB (vous devez créer cette collection)
+    // Stocker les résultats dans la collection "Metrics" de MongoDB 
     const metricsCollection = req.app.locals.db.collection('Metrics');
     await metricsCollection.insertOne({
       type: 'filterMetrics',
       data: avgPrices,
     });
 
-    // Faites quelque chose avec les résultats, par exemple, renvoyez-les en tant que réponse JSON
+    
     return res.json({
       success: true,
       data: avgPrices,
