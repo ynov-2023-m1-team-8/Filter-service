@@ -1,7 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-const productController = require('../controllers/product.controller');
+const productController = require('../controllers/filter.controller');
 
 router.post('/filter', productController.postFilter);
 router.get('/filter-stock', productController.getFilters);

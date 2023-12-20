@@ -1,5 +1,5 @@
 const express = require('express');
-const productRoute = require('./product.route');
+const productRoute = require('./filter.route');
 
 const router = express.Router();
 
