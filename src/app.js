@@ -1,11 +1,11 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
+const { MongoClient } = require('mongodb');
+const { PrismaClient } = require('@prisma/client');
 const errorHandler = require('./middlewares/errorsHandling');
 const config = require('./config');
 const routes = require('./routes');
-const { MongoClient } = require('mongodb');
-const { PrismaClient } = require('@prisma/client');
 
 const app = express();
 const prisma = new PrismaClient();
@@ -13,18 +13,15 @@ const prisma = new PrismaClient();
 // parse urlencoded request body
 app.use(express.urlencoded({ extended: true }));
 
-const mongoURI = process.env.MONGODB_URI;
-
 // Connect to MongoDB
 MongoClient.connect(process.env.MONGODB_URI)
   .then((client) => {
     const db = client.db('mystorereplica');
 
-    
     app.locals.db = db;
     console.log('Connected to MongoDB');
 
-    // Function to replicate a single product 
+    // Function to replicate a single product
     const replicateProducts = async (productId) => {
       try {
         // Read data for a unique product from SQLite
@@ -59,8 +56,9 @@ MongoClient.connect(process.env.MONGODB_URI)
         });
 
         // Replicate the  products to MongoDB (if not synchronized)
+        // eslint-disable-next-line no-restricted-syntax
         for (const { id } of productIds) {
-          await replicateProducts(id);
+          replicateProducts(id);
         }
       } catch (error) {
         console.error('Error synchronizing data:', error);
@@ -71,11 +69,11 @@ MongoClient.connect(process.env.MONGODB_URI)
     app.use(
       cors({
         origin: config.frontend_url,
-      })
+      }),
     );
 
     // access to public folder
-    app.use(express.static(__dirname + '/public'));
+    app.use(express.static(`${__dirname}/public`));
 
     // initial route
     app.get('/', (req, res) => {
@@ -83,7 +81,7 @@ MongoClient.connect(process.env.MONGODB_URI)
     });
 
     // api routes prefix
-    app.use('/api', routes);
+    app.use('/api-filter', routes);
 
     // error handling
     app.use(errorHandler);

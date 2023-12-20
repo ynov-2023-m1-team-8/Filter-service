@@ -1,5 +1,3 @@
-require('@prisma/client');
-
 exports.postFilter = async (req, res) => {
   try {
     const { minPrice, maxPrice } = req.body;
@@ -58,47 +56,5 @@ exports.getFilterMetrics = async (req, res, next) => {
     });
   } catch (err) {
     return next(err);
-  }
-};
-
-exports.getProductFiltered = async (req, res) => {
-  const { min, max } = req.query;
-
-  // Convertir les chaînes en nombres
-  const minValue = parseFloat(min);
-  const maxValue = parseFloat(max);
-  const collection = req.app.locals.db.collection('Products');
-
-  // Assurez-vous que collection est correctement défini
-  if (collection) {
-    try {
-      const products = await collection.find({
-        price: {
-          $gte: minValue,
-          $lte: maxValue,
-        },
-      }).toArray();
-
-      // Faites quelque chose avec les produits trouvés
-      console.log('Produits trouvés :', products);
-
-      return res.json({
-        data: products,
-        success: true,
-      });
-    } catch (error) {
-      // Gérez les erreurs de manière appropriée
-      console.error(error);
-      return res.status(500).json({
-        error: 'Une erreur est survenue lors de la récupération des produits filtrés.',
-        success: false,
-      });
-    }
-  } else {
-    console.error("La collection n'est pas correctement définie.");
-    return res.status(500).json({
-      error: 'La collection de produits n\'est pas correctement définie.',
-      success: false,
-    });
   }
 };
