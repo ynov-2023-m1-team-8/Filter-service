@@ -2,8 +2,8 @@ require('@prisma/client');
 
 exports.postFilter = async (req, res) => {
   try {
-    const { minPrice, maxPrice } = req.body;
-    // console.log('price', minPrice, maxPrice);
+    const { minPrice, maxPrice } = req.query;
+    console.log('price', minPrice, maxPrice);
     // Enregistrez les choix de filtres dans la collection "FilterAnalytics" de MongoDB
     const filterChoice = { minPrice, maxPrice };
     const analyticsCollection = req.app.locals.db.collection('FilterAnalytics');
